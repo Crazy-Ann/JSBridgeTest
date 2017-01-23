@@ -110,7 +110,6 @@ var Zepto = (function() {
     }
 
     //获取对象类型
-
     function type(obj) {
         //obj为null或者undefined时，直接返回'null'或'undefined'
         return obj == null ? String(obj) : class2type[toString.call(obj)] || "object"
@@ -133,7 +132,6 @@ var Zepto = (function() {
     }
     //对于通过字面量定义的对象和new Object的对象返回true，new Object时传参数的返回false
     //可参考http://snandy.iteye.com/blog/663245
-
     function isPlainObject(obj) {
         return isObject(obj) && !isWindow(obj) && obj.__proto__ == Object.prototype
     }
@@ -142,20 +140,17 @@ var Zepto = (function() {
         return value instanceof Array
     }
     //类数组，比如nodeList，这个只是做最简单的判断，如果给一个对象定义一个值为数据的length属性，它同样会返回true
-
     function likeArray(obj) {
         return typeof obj.length == 'number'
     }
 
     //清除给定的参数中的null或undefined，注意0==null,'' == null为false
-
     function compact(array) {
         return filter.call(array, function(item) {
             return item != null
         })
     }
     //类似得到一个数组的副本
-
     function flatten(array) {
         return array.length > 0 ? $.fn.concat.apply([], array) : array
     }
@@ -180,20 +175,16 @@ var Zepto = (function() {
             return array.indexOf(item) == idx
         })
     }
-
     //将给定的参数生成正则
-
     function classRE(name) {
         //classCache,缓存正则
         return name in classCache ? classCache[name] : (classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)'))
     }
     //给需要的样式值后面加上'px'单位，除了cssNumber里面的指定的那些
-
     function maybeAddPx(name, value) {
         return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
     }
     //获取节点的默认display属性
-
     function defaultDisplay(nodeName) {
         var element, display
         if (!elementDisplay[nodeName]) { //缓存里不存在
@@ -207,13 +198,11 @@ var Zepto = (function() {
         return elementDisplay[nodeName]
     }
     //获取指定元素的子节点(不包含文本节点),Firefox不支持children，所以只能通过筛选childNodes
-
     function children(element) {
         return 'children' in element ? slice.call(element.children) : $.map(element.childNodes, function(node) {
             if (node.nodeType == 1) return node
         })
     }
-
     // `$.zepto.fragment` takes a html string and an optional tag name
     // to generate DOM nodes nodes from the given html string.
     // The generated DOM nodes are returned as an array.
@@ -305,7 +294,6 @@ var Zepto = (function() {
     }
 
     //扩展，deep表示是否深度扩展
-
     function extend(target, source, deep) {
         for (key in source)
             //如果深度扩展
@@ -355,7 +343,6 @@ var Zepto = (function() {
     }
 
     //在结果中进行过滤
-
     function filtered(nodes, selector) {
         return selector === undefined ? $(nodes) : $(nodes).filter(selector)
     }
@@ -366,7 +353,6 @@ var Zepto = (function() {
 
     //这个函数在整个库中取着很得要的作用，处理arg为函数或者值的情况
     //下面很多设置元素属性时的函数都有用到
-
     function funcArg(context, arg, idx, payload) {
         return isFunction(arg) ? arg.call(context, idx, payload) : arg
     }
@@ -377,7 +363,6 @@ var Zepto = (function() {
     }
 
     // access className property while respecting SVGAnimatedString
-
     function className(node, value) {
         var klass = node.className,
             svg = klass && klass.baseVal !== undefined
@@ -432,7 +417,7 @@ var Zepto = (function() {
     $.support = {}
     $.expr = {}
 
-    //遍历elements，将每条记录放入callback里进宪处理，保存处理函数返回值不为null或undefined的结果
+    //遍历elements，将每条记录放入callback里进行处理，保存处理函数返回值不为null或undefined的结果
     //注意这里没有统一的用for in,是为了避免遍历数据默认属性的情况，如数组的toString,valueOf
     $.map = function(elements, callback) {
         var value, values = [],
@@ -461,7 +446,6 @@ var Zepto = (function() {
             for (key in elements)
                 if (callback.call(elements[key], key, elements[key]) === false) return elements
         }
-
         return elements
     }
     //过滤
@@ -1129,9 +1113,7 @@ window.Zepto = Zepto;
 
 })(Zepto)
 
-    /*
-     事件处理部份
-     */
+    // 事件处理部份
 ;
 (function($) {
     var $$ = $.zepto.qsa,
@@ -1462,9 +1444,7 @@ window.Zepto = Zepto;
 
 })(Zepto)
 
-/**
- Ajax处理部份
- **/
+ //Ajax处理部份
 ;
 (function($) {
     var jsonpID = 0,
@@ -2141,7 +2121,7 @@ window.Zepto = Zepto;
         var query = decodeURIComponent(window.location.search.substring(1));
         var vars = query.split("&");
         for (var i=0;i<vars.length;i++) {
-            var pair = vars[i].split("=");
+            var pair = vars[i].split(",");
             // If first entry with this name
             if (typeof query_string[pair[0]] === "undefined") {
                 query_string[pair[0]] = pair[1];

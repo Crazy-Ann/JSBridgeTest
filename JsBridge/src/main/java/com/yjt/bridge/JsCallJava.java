@@ -26,7 +26,7 @@ public class JsCallJava {
                 throw new JsCallJavaException("injected name can not be null");
             }
             mInjectedName = injectedName;
-            mMethodsMap = new HashMap<String, Method>();
+            mMethodsMap = new HashMap<>();
             StringBuilder builder = new StringBuilder("javascript:(function(b){console.log(\"");
             builder.append(mInjectedName);
             builder.append(" initialization begin\");var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d);if(!e){delete this.queue[c]}}};");
@@ -35,8 +35,10 @@ public class JsCallJava {
                 if (method.getModifiers() != (Modifier.PUBLIC | Modifier.STATIC) || (sign = genJavaMethodSign(method)) == null) {
                     continue;
                 }
+                Log.d("---->1", method.getName());
                 mMethodsMap.put(sign, method);
                 builder.append(String.format("a.%s=", method.getName()));
+                Log.d("---->2", builder.toString());
             }
 
             builder.append("function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw\"");
@@ -49,8 +51,9 @@ public class JsCallJava {
             builder.append(mInjectedName);
             builder.append(" initialization end\")})(window);");
             mPreloadInterfaceJS = builder.toString();
+            Log.d("---->3", mPreloadInterfaceJS);
         } catch (JsCallJavaException e) {
-            Log.e("---->", "init js error:" + e.getMessage());
+            Log.e("---->", "js initialization error:" + e.getMessage());
         }
     }
 
@@ -91,32 +94,32 @@ public class JsCallJava {
                 JSONObject callJson = new JSONObject(jsonStr);
                 String methodName = callJson.getString("method");
                 JSONArray argsTypes = callJson.getJSONArray("types");
-                JSONArray argsVals = callJson.getJSONArray("args");
+                JSONArray argsValues = callJson.getJSONArray("args");
                 String sign = methodName;
-                int len = argsTypes.length();
-                Object[] values = new Object[len + 1];
+                int length = argsTypes.length();
+                Object[] values = new Object[length + 1];
                 int numIndex = 0;
                 String currType;
 
                 values[0] = webView;
 
-                for (int k = 0; k < len; k++) {
+                for (int k = 0; k < length; k++) {
                     currType = argsTypes.optString(k);
                     if ("string".equals(currType)) {
                         sign += "_S";
-                        values[k + 1] = argsVals.isNull(k) ? null : argsVals.getString(k);
+                        values[k + 1] = argsValues.isNull(k) ? null : argsValues.getString(k);
                     } else if ("number".equals(currType)) {
                         sign += "_N";
                         numIndex = numIndex * 10 + k + 1;
                     } else if ("boolean".equals(currType)) {
                         sign += "_B";
-                        values[k + 1] = argsVals.getBoolean(k);
+                        values[k + 1] = argsValues.getBoolean(k);
                     } else if ("object".equals(currType)) {
                         sign += "_O";
-                        values[k + 1] = argsVals.isNull(k) ? null : argsVals.getJSONObject(k);
+                        values[k + 1] = argsValues.isNull(k) ? null : argsValues.getJSONObject(k);
                     } else if ("function".equals(currType)) {
                         sign += "_F";
-                        values[k + 1] = new JsCallback(webView, mInjectedName, argsVals.getInt(k));
+                        values[k + 1] = new JsCallback(webView, mInjectedName, argsValues.getInt(k));
                     } else {
                         sign += "_P";
                     }
@@ -137,12 +140,12 @@ public class JsCallJava {
                         currIndex = numIndex - numIndex / 10 * 10;
                         currCls = methodTypes[currIndex];
                         if (currCls == int.class) {
-                            values[currIndex] = argsVals.getInt(currIndex - 1);
+                            values[currIndex] = argsValues.getInt(currIndex - 1);
                         } else if (currCls == long.class) {
                             //WARN: argsJson.getLong(k + defValue) will return a bigger incorrect number
-                            values[currIndex] = Long.parseLong(argsVals.getString(currIndex - 1));
+                            values[currIndex] = Long.parseLong(argsValues.getString(currIndex - 1));
                         } else {
-                            values[currIndex] = argsVals.getDouble(currIndex - 1);
+                            values[currIndex] = argsValues.getDouble(currIndex - 1);
                         }
                         numIndex /= 10;
                     }

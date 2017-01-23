@@ -18,7 +18,7 @@ public class InjectedChromeClient extends WebChromeClient {
     public InjectedChromeClient(JsCallJava JsCallJava) {
         mJsCallJava = JsCallJava;
     }
-
+    
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         if (newProgress <= 25) {

@@ -26,16 +26,16 @@ public class TestChromeClient extends InjectedChromeClient {
     }
 
     @Override
-    public void onProgressChanged(WebView view, int newProgress) {
-        super.onProgressChanged(view, newProgress);
-        // to do your work
-        // ...
-    }
-
-    @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
         // to do your work
         // ...
         return super.onJsPrompt(view, url, message, defaultValue, result);
+    }
+    
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        super.onProgressChanged(view, newProgress);
+        // to do your work
+        // ...
     }
 }

@@ -13,6 +13,8 @@
 
     <WebView
         android:id="@+id/webView"
+        android:hardwareAccelerated="true"
+        android:process=":webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>
